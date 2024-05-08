@@ -27,19 +27,20 @@ const VerifyEmailForm = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const email = searchParams.get("email");
+  const email = searchParams.get("email") ?? null;
 
   const verify = api.auth.verify.useMutation();
   const form = useForm<z.infer<typeof verificationFormSchema>>({
     resolver: zodResolver(verificationFormSchema),
   });
 
-  if (!email) {
-    toast.error("Invalid email");
-    router.push("/register");
-    return null;
-  }
   const onSubmit = async (data: z.infer<typeof verificationFormSchema>) => {
+    if (!email) {
+      toast.error("Invalid email");
+      router.push("/register");
+      return null;
+    }
+
     verify
       .mutateAsync({
         ...data,
@@ -50,6 +51,10 @@ const VerifyEmailForm = () => {
       });
   };
 
+  if (!email) {
+    return <div>Invalid email</div>;
+  }
+
   return (
     <Form {...form}>
       <form
@@ -58,7 +63,7 @@ const VerifyEmailForm = () => {
       >
         <Text className="mx-auto max-w-xs text-center">
           Enter the 8 digit code you have received on{" "}
-          {email.split("@")[0]?.slice(0, 3) + "...@" + email.split("@")[1]}
+          {email?.split("@")[0]?.slice(0, 3) + "...@" + email?.split("@")[1]}
         </Text>
         <FormField
           control={form.control}
