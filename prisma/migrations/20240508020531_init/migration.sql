@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "emailOtp" SET DATA TYPE TEXT;
